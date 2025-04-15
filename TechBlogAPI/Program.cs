@@ -17,7 +17,25 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+string connectionString;
+if (Environment.GetEnvironmentVariable("JAWSDB_URL") != null)
+{
+    // Parse JAWSDB_URL
+    var jawsDbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
+    connectionString = jawsDbUrl
+        .Replace("mysql://", "Server=")
+        .Replace(":", ";Port=")
+        .Replace("@", ";User Id=")
+        .Replace("/", ";Database=")
+        .Replace("?", ";");
+}
+else
+{
+    // Fallback for local development
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddCors(options =>
 {
