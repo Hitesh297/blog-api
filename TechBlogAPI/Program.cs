@@ -21,18 +21,13 @@ builder.Services.AddApplication();
 string connectionString;
 if (Environment.GetEnvironmentVariable("JAWSDB_URL") != null)
 {
-    // Parse JAWSDB_URL
     var jawsDbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
-    connectionString = jawsDbUrl
-        .Replace("mysql://", "Server=")
-        .Replace(":", ";Port=")
-        .Replace("@", ";User Id=")
-        .Replace("/", ";Database=")
-        .Replace("?", ";");
+    var uri = new Uri(jawsDbUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.PathAndQuery.TrimStart('/')};User Id={userInfo[0]};Password={userInfo[1]}";
 }
 else
 {
-    // Fallback for local development
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 }
 builder.Services.AddInfrastructure(connectionString);
