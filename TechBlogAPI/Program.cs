@@ -62,6 +62,9 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 
+string port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 var app = builder.Build();
 
 app.UseExceptionHandlerMiddleware();
