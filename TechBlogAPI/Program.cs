@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
     {
-        builder.WithOrigins("http://localhost:5173") // Adjust for your React app's URL
+        builder.WithOrigins("http://localhost:5173","https://www.hiteshpatel.dev","https://react-portfolio-mauve-five.vercel.app") // Adjust for your React app's URL
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
