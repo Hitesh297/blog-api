@@ -46,6 +46,7 @@ public class BlogRepository : IBlogRepository
         existingBlog.Content = blog.Content;
         existingBlog.Author = blog.Author;
         existingBlog.UpdatedAt = DateTime.UtcNow;
+        existingBlog.ImageUrl = blog.ImageUrl;
         _context.Blogs.Update(existingBlog);
         await _context.SaveChangesAsync(cancellationToken);
     }

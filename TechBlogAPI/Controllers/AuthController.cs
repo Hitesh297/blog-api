@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,22 @@ namespace TechBlogAPI.Controllers
                 Status = 401,
                 Title = "Unauthorized",
                 Detail = "Invalid email or password."
+            });
+        }
+
+        [HttpGet("verify")]
+        [Authorize] // Requires a valid JWT token
+        public IActionResult Verify()
+        {
+            // If the token is valid, the [Authorize] attribute will allow the request to reach this point
+            // Extract user info from the token if needed
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            // Return success response with optional user info
+            return Ok(new
+            {
+                message = "Token is valid",
+                userName
             });
         }
     }
