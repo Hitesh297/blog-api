@@ -12,10 +12,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<TechBlogDbContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-                mysqlOptions => mysqlOptions.EnableRetryOnFailure(3)
-                ));
+        services.AddDbContext<TechBlogDbContext>(opt =>
+        opt.UseSqlServer(connectionString));
 
         services.AddScoped<IBlogRepository, BlogRepository>();
         return services;

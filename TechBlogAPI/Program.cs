@@ -18,18 +18,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
 
-string connectionString;
-if (Environment.GetEnvironmentVariable("JAWSDB_URL") != null)
-{
-    var jawsDbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
-    var uri = new Uri(jawsDbUrl);
-    var userInfo = uri.UserInfo.Split(':');
-    connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.PathAndQuery.TrimStart('/')};User Id={userInfo[0]};Password={userInfo[1]}";
-}
-else
-{
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-}
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddCors(options =>
