@@ -18,18 +18,15 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddInfrastructure(connectionString);
-
-builder.Services.AddCors(options =>
+// CORS for React
+builder.Services.AddCors(opt =>
 {
-    options.AddPolicy("AllowReactApp", builder =>
-    {
-        builder.WithOrigins("http://localhost:5173","https://www.hiteshpatel.dev","https://react-portfolio-mauve-five.vercel.app") // Adjust for your React app's URL
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+    opt.AddPolicy("AllowReactApp", p =>
+        p.WithOrigins(builder.Configuration["Client:Origin"] ?? "http://localhost:5174")
+         .AllowAnyHeader()
+         .AllowAnyMethod());
 });
 
 // Add Identity
@@ -65,9 +62,6 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 
-string port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://*:{port}");
-
 var app = builder.Build();
 
 app.UseExceptionHandlerMiddleware();
@@ -86,9 +80,6 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-
-
 
 // In the middleware pipeline, before app.UseAuthorization():
 app.UseCors("AllowReactApp");
